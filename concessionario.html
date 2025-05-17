@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Tuo Concessionario di Auto</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1, h2 {
+            color: #0056b3;
+            text-align: center;
+        }
+        .auto-vetrina {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .card-auto {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            text-align: center;
+        }
+        .card-auto img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .dettagli-auto {
+            text-align: left;
+            margin-top: 10px;
+        }
+        .prezzo {
+            color: #4CAF50;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .pulsante-dettagli {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .pulsante-dettagli:hover {
+            background-color: #0056b3;
+        }
+        /* Stili per la finestra di dettaglio (inizialmente nascosta) */
+        .modal {
+            display: none; /* Nascosto di default */
+            position: fixed; /* Rimane in posizione fissa */
+            z-index: 1; /* Sopra a tutto */
+            left: 0;
+            top: 0;
+            width: 100%; /* Larghezza totale */
+            height: 100%; /* Altezza totale */
+            overflow: auto; /* Abilita lo scroll se necessario */
+            background-color: rgba(0,0,0,0.4); /* Sfondo scuro con trasparenza */
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% dall'alto e centrato orizzontalmente */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Può variare in base alle necessità */
+            border-radius: 8px;
+            position: relative;
+        }
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .dettagli-completi {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .label-dettaglio {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Benvenuti al Nostro Concessionario Auto</h1>
+    <p style="text-align: center;">Scopri la nostra vasta selezione di auto nuove e usate di alta qualità.</p>
+
+    <div class="auto-vetrina">
+        <div class="card-auto">
+            <img src="https://via.placeholder.com/350x200/0000FF/FFFFFF?Text=Audi+A3" alt="Audi A3">
+            <h2>Audi A3</h2>
+            <div class="dettagli-auto">
+                <p><strong>Modello:</strong> A3 Sportback 35 TFSI</p>
+                <p><strong>Anno:</strong> 2022</p>
+                <p><strong>Chilometri:</strong> 30.000 km</p>
+            </div>
+            <p class="prezzo">€ 27.500</p>
+            <button class="pulsante-dettagli" data-auto="audi_a3">Visualizza Dettagli</button>
+        </div>
+
+        <div class="card-auto">
+            <img src="https://via.placeholder.com/350x200/808080/FFFFFF?Text=Volkswagen+Golf" alt="Volkswagen Golf">
+            <h2>Volkswagen Golf</h2>
+            <div class="dettagli-auto">
+                <p><strong>Modello:</strong> Golf 8 1.5 TSI Life</p>
+                <p><strong>Anno:</strong> 2023</p>
+                <p><strong>Chilometri:</strong> 18.000 km</p>
+            </div>
+            <p class="prezzo">€ 24.000</p>
+            <button class="pulsante-dettagli" data-auto="volkswagen_golf">Visualizza Dettagli</button>
+        </div>
+
+        <div class="card-auto">
+            <img src="https://via.placeholder.com/350x200/ADD8E6/000000?Text=BMW+Serie+3" alt="BMW Serie 3">
+            <h2>BMW Serie 3</h2>
+            <div class="dettagli-auto">
+                <p><strong>Modello:</strong> 320d Touring</p>
+                <p><strong>Anno:</strong> 2021</p>
+                <p><strong>Chilometri:</strong> 55.000 km</p>
+            </div>
+            <p class="prezzo">€ 32.000</p>
+            <button class="pulsante-dettagli" data-auto="bmw_serie3">Visualizza Dettagli</button>
+        </div>
+
+        <div class="card-auto">
+            <img src="https://via.placeholder.com/350x200/FFA07A/FFFFFF?Text=Fiat+500" alt="Fiat 500">
+            <h2>Fiat 500</h2>
+            <div class="dettagli-auto">
+                <p><strong>Modello:</strong> 500 1.0 Hybrid Lounge</p>
+                <p><strong>Anno:</strong> 2024</p>
+                <p><strong>Chilometri:</strong> 8.000 km</p>
+            </div>
+            <p class="prezzo">€ 17.900</p>
+            <button class="pulsante-dettagli" data-auto="fiat_500">Visualizza Dettagli</button>
+        </div>
+
+    </div>
+
+    <div id="modalDettagli" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modal-titolo"></h2>
+            <img id="modal-immagine" src="" alt="" style="max-width: 100%; height: auto; border-radius: 5px; margin-bottom: 10px;">
+            <div class="dettagli-completi">
+                <p><strong class="label-dettaglio">Modello:</strong> <span id="modal-modello"></span></p>
+                <p><strong class="label-dettaglio">Anno:</strong> <span id="modal-anno"></span></p>
+                <p><strong class="label-dettaglio">Chilometri:</strong> <span id="modal-chilometri"></span></p>
+                <p><strong class="label-dettaglio">Carburante:</strong> <span id="modal-carburante"></span></p>
+                <p><strong class="label-dettaglio">Trasmissione:</strong> <span id="modal-trasmissione"></span></p>
+                <p><strong class="label-dettaglio">Colore:</strong> <span id="modal-colore"></span></p>
+                <p><strong class="label-dettaglio">Prezzo:</strong> <span id="modal-prezzo-dettaglio"></span></p>
+                <p><strong class="label-dettaglio">Descrizione:</strong> <span id="modal-descrizione"></span></p>
+                </div>
+        </div>
+    </div>
+
+    <script>
+        // Dati delle auto (potresti caricarli da un file JSON o un database)
+        const autoData = {
+            "audi_a3": {
+                "titolo": "Audi A3 Sportback 35 TFSI",
+                "immagine": "https://via.placeholder.com/600x300/0000FF/FFFFFF?Text=Audi+A3+(Dettaglio)",
+                "modello": "A3 Sportback 35 TFSI",
+                "anno": 2022,
+                "chilometri": "30.000 km",
+                "carburante": "Benzina",
+                "trasmissione": "Manuale",
+                "colore": "Grigio Daytona",
+                "prezzo": "€ 27.500",
+                "descrizione": "Audi A3 Sportback con motore 1.5 TFSI, allestimento Life, in ottime condizioni e con pochi chilometri."
+            },
+            "volkswagen_golf": {
+                "titolo": "Volkswagen Golf 8 1.5 TSI Life",
+                "immagine": "https://via.placeholder.com/600x300/808080/FFFFFF?Text=Volkswagen+Golf+(Dettaglio)",
+                "modello": "Golf 8 1.5 TSI Life",
+                "anno": 2023,
+                "chilometri": "18.000 km",
+                "carburante": "Benzina",
+                "trasmissione": "Manuale",
+                "colore": "Bianco Pure",
+                "prezzo": "€ 24.000",
+                "descrizione": "Volkswagen Golf di ottava generazione, motore 1.5 TSI con allestimento Life, dotata di numerosi comfort e sistemi di assistenza alla guida."
+            },
+            "bmw_serie3": {
+                "titolo": "BMW Serie 3 320d Touring",
+                "immagine": "https://via.placeholder.com/600x300/ADD8E6/000000?Text=BMW+Serie+3+(Dettaglio)",
+                "modello": "320d Touring",
+                "anno": 2021,
+                "chilometri": "55.000 km",
+                "carburante": "Diesel",
+                "trasmissione": "Automatico",
+                "colore": "Nero Metallizzato",
+                "prezzo": "€ 32.000",
+                "descrizione": "BMW Serie 3 Touring con motore diesel 2.0, spaziosa e ideale per la famiglia e i viaggi, con cambio automatico e interni in pelle."
+            },
+            "fiat_500": {
+                "titolo": "Fiat 500 1.0 Hybrid Lounge",
+                "immagine": "https://via.placeholder.com/600x300/FFA07A/FFFFFF?Text=Fiat+500+(Dettaglio)",
+                "modello": "500 1.0 Hybrid Lounge",
+                "anno": 2024,
+                "chilometri": "8.000 km",
+                "carburante": "Mild-hybrid",
+                "trasmissione": "Manuale",
+                "colore": "Azzurro Italia",
+                "prezzo": "€ 17.900",
+                "descrizione": "Fiat 500 con motorizzazione ibrida, allestimento Lounge con tetto panoramico e sistema di infotainment avanzato. Perfetta per la città e non solo."
+            }
+            // Aggiungi qui i dati per le altre auto
+        };
+
+        // Ottieni la finestra modale
+        const modal = document.getElementById("modalDettagli");
+
+        // Ottieni il pulsante di chiusura
+        const closeButton = document.querySelector(".close-button");
+
+        // Ottieni tutti i pulsanti "Visualizza Dettagli"
+        const dettagliButtons = document.querySelectorAll(".pulsante-dettagli");
+
+        // Aggiungi un event listener a ciascun pulsante
+        dettagliButtons.forEach(button => {
+            button.addEventListener("click", function() {
+                const autoId = this.getAttribute("data-auto");
+                const auto = autoData[autoId];
+
+                // Popola la finestra modale con i dettagli dell'auto
+                document.getElementById("modal-titolo").textContent = auto.titolo;
+                document.getElementById("modal-immagine").src = auto.immagine;
+                document.getElementById("modal-immagine").alt = auto.titolo;
+                document.getElementById("modal-modello").textContent = auto.modello;
+                document.getElementById("modal-anno").textContent = auto.anno;
+                document.getElementById("modal-chilometri").textContent = auto.chilometri;
+                document.getElementById("modal-carburante").textContent = auto.carburante;
+                document.getElementById("modal-trasmissione").textContent = auto.trasmissione;
+                document.getElementById("modal-colore").textContent = auto.colore;
+                document.getElementById("modal-prezzo-dettaglio").textContent = auto.prezzo;
+                document.getElementById("modal-descrizione").textContent = auto.descrizione;
+
+                modal.style.display = "block";
+            });
+        });
+
+        // Chiudi la finestra modale quando si clicca sulla "x"
+        closeButton.addEventListener("click", function() {
+            modal.style.display = "none";
+        });
+
+        // Chiudi la finestra modale se si clicca fuori dalla finestra
+        window.addEventListener("click", function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        });
+    </script>
+</body>
+</html>
